@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import MainPage from './pages/MainPage/MainPage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
+import MyLunchesPage from './pages/MyLunchesPage/MyLunchesPage';
+import HistoryPage from './pages/HistoryPage/HistoryPage';
+import CreateLunchPage from './pages/CreateLunchPage/CreateLunchPage';
+import LunchInfoPage from './pages/LunchInfoPage/LunchInfoPage';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+import NotFound from './pages/NotFound/NotFound';
 import './App.css'
+import { useSelector } from 'react-redux';
+import { RootState } from '@reduxjs/toolkit/query';
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
+  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+  return accessToken ? children : <Navigate to="/login" />;
 }
+
+const App: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/my-lunches" element={<PrivateRoute><MyLunchesPage /></PrivateRoute>} />
+      <Route path="/history" element={<HistoryPage />} />
+      <Route path="/create-lunch" element={<PrivateRoute><CreateLunchPage /></PrivateRoute>} />
+      <Route path="/lunch/:id" element={<PrivateRoute><LunchInfoPage /></PrivateRoute>} />
+      <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 export default App
