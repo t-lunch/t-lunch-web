@@ -11,58 +11,233 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+
+  --brand-color: #FFC400;
+  --text-color: #333333;
+  --bg-color: #F2F2F2;
+  --border-radius: 8px;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Arial', sans-serif;
+}
+
+/* Шапка (header) */
+header.navbar {
+  background-color: #000;
+  color: #fff;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.navbar__logo {
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.navbar__links {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar__link {
+  text-decoration: none;
+  color: #fff;
+}
+
+/* Общий контейнер (container (контейнер)) */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Кнопки */
+.button {
+  background-color: var(--brand-color);
+  color: #000;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1.5rem;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.button:hover {
+  background-color: #ffd633;
+}
+
+/* Карточка (card (карточка)) */
+.card {
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card__title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.card__subtitle {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+/* Поля ввода */
+input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  padding: 0.75rem;
+  font-size: 1rem;
+  resize: vertical;
+  margin-bottom: 0.75rem;
+}
+
+/* Блоки для авторизации / регистрации */
+.auth-container {
+  width: 400px;
+  margin: 5rem auto;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 2rem;
+}
+
+.auth-container__title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form a {
+  color: var(--brand-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.form a:hover {
+  text-decoration: underline;
+}
+
+/* Главная страница (MainPage) */
+.main-page {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.main-page__title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.main-page__button {
+  margin-bottom: 2rem;
+}
+
+.lunch-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+/* История обедов */
+.history-page {
+  padding: 2rem 0;
+}
+
+.history-page input {
+  width: 300px;
+  border-radius: var(--border-radius);
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+/* Создание обеда */
+.create-lunch-page {
+  width: 400px;
+  margin: 2rem auto;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 2rem;
+}
+
+.create-lunch-page label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+/* Информация об обеде */
+.lunch-info-page {
+  width: 600px;
+  margin: 2rem auto;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 2rem;
+}
+
+.lunch-info-page h1 {
+  margin-bottom: 1rem;
+}
+
+.lunch-info-page p {
+  margin-bottom: 0.5rem;
+}
+
+.lunch-info-page a {
+  color: var(--brand-color);
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.lunch-info-page a:hover {
+  text-decoration: underline;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { register as registerAPI } from '../../api/authAPI';
 import { useNavigate } from 'react-router-dom';
-
+import './RegisterPage.module.scss';
 
 interface RegisterFormInputs {
   firstName: string;
