@@ -1,0 +1,36 @@
+@import '../../assets/styles/variables.scss';
+
+.input-wrapper {
+  height: 4.375rem;
+  width: 100%;
+  margin-bottom: calc(#{$spacing-medium} - 0.5rem);
+}
+
+input {
+  width: 100%;
+  height: 56px;
+  padding: 0 20px;
+  border: none;
+  outline: none;
+  border-radius: $border-radius;
+  font-size: 1rem;
+  background-color: $input-background-grey;
+  color: $black;
+
+  &::placeholder {
+    font-family: "Roboto", sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 0.9375rem;
+    color: $placeholder-grey;
+  }
+}
+
+.input-error {
+  border-color: $red;
+}
+
+.error-message {
+  color: $red;
+  font-size: 0.85rem;
+  margin: 1rem 0 0 0.5rem ;
+}

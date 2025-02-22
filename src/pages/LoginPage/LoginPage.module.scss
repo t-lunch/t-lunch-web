@@ -1,46 +1,51 @@
-.login-page {
-  width: 400px;
-  margin: 5rem auto;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+@import '../../assets/styles/variables.scss';
 
-  h2 {
-    text-align: center;
-    margin-bottom: 1rem;
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 0 auto 2.5rem;
+  color: $black;
+}
+
+form {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-large;
+  box-shadow: $shadow;
+  width: 600px;
+  padding: 6rem 3.25rem 3rem;
+  text-align: left;
+  background-color: $white;
+  border-radius: $modal-radius;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    padding: 3rem 1.5rem 1.5rem;
   }
 
-  form {
-    display: flex;
-    flex-direction: column;
+  .error-message {
+    color: red;
+    font-size: 0.85rem;
+    margin-bottom: $spacing-small;
+  }
 
-    input {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
+  .forgot-password {
+    margin-top: $spacing-small;
+    font-size: 0.9rem;
+    color: $blue;
+    text-decoration: none;
 
-    span {
-      color: red;
-      font-size: 0.875rem;
-      margin-bottom: 0.75rem;
-    }
-
-    button {
-      background-color: $yellow;
-      border: none;
-      padding: 0.75rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-      
-      &:hover {
-        background-color: $yellow;
-      }
+    &:hover {
+      text-decoration: underline;
     }
   }
 }
+

@@ -1,0 +1,17 @@
+.authLink {
+  color: $opacity-black;
+  margin-top: 1rem;
+  font-size: 14px;
+  text-align: center;
+}
+
+.link {
+  color: $black;
+  text-decoration: underline;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: #0056b3;
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,17 @@
+@import '../../assets/styles/variables.scss';
+
+.link {
+  display: block;
+  font-size: .875rem;
+  color: $black;
+  text-decoration: none;
+  text-align: right;
+  font-weight: 400 !important;
+  transition: color 0.2s ease-in-out;
+  margin: .5rem 0 4.375rem;
+
+  &:hover {
+    color: $blue;
+    text-decoration: underline;
+  }
+}
