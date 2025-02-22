@@ -1,0 +1,68 @@
+@import "../../assets/styles/variables.scss";
+
+.select-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: $spacing-large;
+
+  &::after {
+    content: "▼";
+    font-size: 0.85rem;
+    color: $placeholder-grey;
+    position: absolute;
+    right: 1.5rem;
+    top: 67%;
+    pointer-events: none;
+    transition: color 0.2s ease-in-out;
+  }
+}
+
+.select {
+  width: 100%;
+  height: 56px;
+  padding: 0 20px;
+  border-radius: $border-radius;
+  font-size: 1rem;
+  background-color: $input-background-grey;
+  color: $black;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:focus {
+    border-color: $blue;
+    box-shadow: 0 0 5px rgba($blue, 0.3);
+  }
+
+  &:hover {
+    background-color: lighten($input-background-grey, 5%);
+  }
+
+  &:invalid {
+    color: $placeholder-grey;
+  }
+}
+
+.select option {
+  background-color: $white;
+  color: $black;
+  font-size: 1rem;
+  padding: 12px;
+  border: none; 
+}
+
+.select:focus + .select-wrapper::after {
+  color: $blue;
+}
+
+.select-error {
+  border: 2px solid $red;
+  box-shadow: 0 0 5px rgba($red, 0.3);
+}
+
+.error-message {
+  color: $red;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
