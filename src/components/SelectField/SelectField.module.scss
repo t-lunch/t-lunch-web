@@ -1,6 +1,7 @@
 @import "../../assets/styles/variables.scss";
 
 .select-wrapper {
+  display: block;
   position: relative;
   width: 100%;
   margin-bottom: $spacing-large;
@@ -11,7 +12,8 @@
     color: $placeholder-grey;
     position: absolute;
     right: 1.5rem;
-    top: 67%;
+    top: 47%;
+    // transform: translateY(-50%);
     pointer-events: none;
     transition: color 0.2s ease-in-out;
   }

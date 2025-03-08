@@ -1,0 +1,17 @@
+.error-container {
+  flex: 1 1 auto;
+  color: $red;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+
+.error-message {
+  color: $red;
+  margin: .2rem .5rem;
+  font-size: 0.85rem;
+}
+
+.login-error {
+  margin-top: 0 !important;
+}

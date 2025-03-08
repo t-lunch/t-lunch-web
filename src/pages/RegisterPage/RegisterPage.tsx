@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { register as registerAPI } from "../../api/authAPI";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import FormLabel from "../../components/FormLabel/FormLabel";
 import Button from "../../components/Button/Button";
 import AuthLink from "../../components/AuthLink/AuthLink";
 import SelectField from "../../components/SelectField/SelectField";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 interface RegisterFormInputs {
   firstName: string;
@@ -19,22 +20,21 @@ interface RegisterFormInputs {
 
 const RegisterPage: React.FC = () => {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormInputs>();
+  const [serverError, setServerError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const onSubmit = async (data: RegisterFormInputs) => {
     try {
       await registerAPI(data);
       navigate("/login");
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setServerError(error.message);
     }
   };
 
   return (
     <div>
-
       <form onSubmit={handleSubmit(onSubmit)}>
-
         <h2>Регистрация</h2>
         
         <FormLabel>Имя</FormLabel>
@@ -73,7 +73,6 @@ const RegisterPage: React.FC = () => {
           error={errors.telegram}
         />
 
-
         <SelectField
           label="Офис"
           options={[
@@ -83,6 +82,8 @@ const RegisterPage: React.FC = () => {
           register={register("office", { required: "Обязательное поле" })}
           error={errors.office?.message}
         />
+
+        <ErrorMessage error={serverError ? { message: serverError } : null} />
 
         <Button type="submit" disabled={isSubmitting}>Зарегистрироваться</Button>
 

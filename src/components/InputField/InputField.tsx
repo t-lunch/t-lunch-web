@@ -1,19 +1,24 @@
 import React from "react";
-import { FieldError } from "react-hook-form";
 import styles from "./InputField.module.scss";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 interface InputFieldProps {
-  type?: string;
   placeholder: string;
-  error?: FieldError;
   register: any;
+  error?: { message?: string } | null;
+  type?: string;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ type = "text", placeholder, error, register }) => {
+const InputField: React.FC<InputFieldProps> = ({ placeholder, register, error, type = "text" }) => {
   return (
     <div className={styles["input-wrapper"]}>
-      <input type={type} placeholder={placeholder} className={error ? styles["input-error"] : ""} {...register} />
-      {error && <span className={styles["error-message"]}>{error.message || "Это поле обязательно"}</span>}
+      <input
+        type={type}
+        placeholder={placeholder}
+        className={`${error ? styles["input-error"] : ""}`}
+        {...register}
+      />
+      <ErrorMessage error={error} />
     </div>
   );
 };

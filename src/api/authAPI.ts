@@ -38,5 +38,35 @@ api.interceptors.response.use(
   }
 );
 
-export const register = (data: any) => api.post("/auth/register", data);
-export const login = (data: any) => api.post("/auth/login", data);
+// export const register = (data: any) => api.post("/auth/register", data);
+// export const login = (data: any) => api.post("/auth/login", data);
+
+export const register = (data: any) => {
+  return new Promise((resolve, reject) => {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const existingUser = users.find((user: any) => user.username === data.username);
+
+    if (existingUser) {
+      reject(new Error("Пользователь с таким логином уже существует"));
+    } else {
+      users.push(data);
+      localStorage.setItem('users', JSON.stringify(users));
+      resolve({ data: { message : "Регистрация успешна "}});  
+    }
+  })
+}
+
+export const login = (data: any) => {
+  return new Promise((resolve, reject) => {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = users.find((user: any) => user.username === data.username && user.password === data.password);
+    if (user) {
+      // fake tokens
+      const accessToken = "fakeAccessToken";
+      const refreshToken = "fakeRefreshToken";
+      resolve({ data: { accessToken, refreshToken, userId: user.username } });
+    } else {
+      reject(new Error("Неверные логин или пароль"));
+    }
+  });
+};
