@@ -1,45 +1,66 @@
 .main-page {
   padding: 2rem 1rem;
-  text-align: center;
+  max-width: 49rem;
+  width: 100%;
+  margin: 0 auto;
+  font-family: sans-serif;
+  background-color: #f8f8f8; 
 
-  h1 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-  }
-
-  button {
-    background-color: #FFC400;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
+  &__create {
+    text-align: center;
     margin-bottom: 2rem;
-    transition: background-color 0.3s ease;
 
-    &:hover {
-      background-color: #ffd633;
+    .create-button {
+      background-color: #ffc400;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #ffd633;
+      }
     }
   }
 
   .lunch-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); // auto-fill (автоматическое заполнение)
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1rem;
+    max-width: 1200px;
+    margin: 0 auto; 
 
     .lunch-card {
       background-color: #fff;
       padding: 1rem;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      text-align: left;
+      text-align: center;
 
-      p {
+      &__image {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 1rem;
+      }
+
+      &__title {
+        font-size: 1.2rem;
         margin-bottom: 0.5rem;
       }
 
-      button {
-        background-color: #FFC400;
+      &__info {
+        margin-bottom: 1rem;
+
+        p {
+          margin: 0.25rem 0;
+          color: #555;
+        }
+      }
+
+      .join-button {
+        background-color: #ffc400;
         border: none;
         padding: 0.5rem 1rem;
         border-radius: 8px;
