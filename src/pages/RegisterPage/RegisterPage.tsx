@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { register as registerAPI } from "../../api/authAPI";
 import { useNavigate } from "react-router-dom";
-import InputField from "../../components/InputField/InputField";
-import FormLabel from "../../components/FormLabel/FormLabel";
-import Button from "../../components/Button/Button";
-import AuthLink from "../../components/AuthLink/AuthLink";
-import SelectField from "../../components/SelectField/SelectField";
-import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
+import InputField from "../../components/layout/InputField/InputField";
+import FormLabel from "../../components/forms/FormLabel/FormLabel";
+import Button from "../../components/ui/Button/Button";
+import AuthLink from "../../components/ui/AuthLink/AuthLink";
+import SelectField from "../../components/forms/SelectField/SelectField";
+import ErrorMessage from "../../components/forms/ErrorMessage/ErrorMessage";
 
 interface RegisterFormInputs {
   firstName: string;

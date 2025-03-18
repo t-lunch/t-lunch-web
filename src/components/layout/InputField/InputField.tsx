@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./InputField.module.scss";
-import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import ErrorMessage from "../../forms/ErrorMessage/ErrorMessage";
 
 interface InputFieldProps {
   placeholder: string;

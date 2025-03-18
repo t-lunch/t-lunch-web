@@ -2,9 +2,9 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getLunches } from "../../api/lunchesAPI";
 import { Link } from "react-router-dom";
-import PageTitle from "../../components/PageTitle/PageTitle";
-import Button from "../../components/Button/Button";
-import LunchCard from "../../components/LunchCard/LunchCard";
+import PageTitle from "../../components/ui/PageTitle/PageTitle";
+import Button from "../../components/ui/Button/Button";
+import LunchCard from "../../components/cards/LunchCard/LunchCard";
 import styles from "./MainPage.module.scss";
 
 interface Lunch {

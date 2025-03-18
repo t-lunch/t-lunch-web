@@ -4,11 +4,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCredentials } from "../../store/authSlice";
 import { login as loginAPI } from "../../api/authAPI";
-import InputField from "../../components/InputField/InputField";
-import Button from "../../components/Button/Button";
-import LinkText from "../../components/LinkText/LinkText";
-import AuthLink from "../../components/AuthLink/AuthLink";
-import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
+import InputField from "../../components/layout/InputField/InputField";
+import Button from "../../components/ui/Button/Button";
+import LinkText from "../../components/ui/LinkText/LinkText";
+import AuthLink from "../../components/ui/AuthLink/AuthLink";
+import ErrorMessage from "../../components/forms/ErrorMessage/ErrorMessage";
 import styles from "./LoginPage.module.scss";
 
 interface LoginFormInputs {

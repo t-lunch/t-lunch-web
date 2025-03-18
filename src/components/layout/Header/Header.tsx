@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Container from '../Container/Container';
 import styles from './Header.module.scss';
-import Logo from '../Logo';
+import Logo from '../../ui/Logo';
 
 const Header: React.FC = () => {
   return (
