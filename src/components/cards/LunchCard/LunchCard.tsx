@@ -13,6 +13,7 @@ interface Lunch {
   time: string;
   participants: number;
   creator: string;
+  buttonText: string;
 }
 
 interface LunchCardProps {
@@ -38,7 +39,7 @@ const LunchCard: React.FC<LunchCardProps> = ({ lunch }) => {
         />
       </div>
 
-      <Button style={{height: "45px", fontWeight: 500, fontSize: ".875rem", color: "#000"}}>Присоединиться</Button>
+      <Button style={{height: "45px", fontWeight: 500, fontSize: ".875rem", color: "#000"}}>{lunch.buttonText}</Button>
     </div>
   );
 };

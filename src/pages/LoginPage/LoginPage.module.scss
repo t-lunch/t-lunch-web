@@ -1,53 +1,55 @@
 @import '../../assets/styles/variables.scss';
 
-.login-container {
+.login-container, .register-page {
   display: flex;
   justify-content: center;
   align-items: center;
   vertical-align: middle;
-}
 
-h2 {
-  font-size: 2rem;
-  font-weight: 500;
-  margin: 0 auto 2.5rem;
-  color: $black;
-}
-
-form {
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  padding: $spacing-large;
-  box-shadow: $shadow;
-  width: 600px;
-  padding: 6rem 3.25rem 3rem;
-  text-align: left;
-  background-color: $white;
-  border-radius: $modal-radius;
-
-  @media screen and (max-width: 768px) {
-    width: 100%;
-    padding: 3rem 1.5rem 1.5rem;
+  h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 0 auto 2.5rem;
+    color: $black;
   }
-
-  .error-message {
-    color: red;
-    font-size: 0.85rem;
-    margin-bottom: $spacing-small;
-  }
-
-  .forgot-password {
-    margin-top: $spacing-small;
-    font-size: 0.9rem;
-    color: $blue;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
+  
+  form {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-large;
+    box-shadow: $shadow;
+    width: 600px;
+    padding: 6rem 3.25rem 3rem;
+    text-align: left;
+    background-color: $white;
+    border-radius: $modal-radius;
+  
+    @media screen and (max-width: 768px) {
+      width: 100%;
+      padding: 3rem 1.5rem 1.5rem;
+    }
+  
+    .error-message {
+      color: red;
+      font-size: 0.85rem;
+      margin-bottom: $spacing-small;
+    }
+  
+    .forgot-password {
+      margin-top: $spacing-small;
+      font-size: 0.9rem;
+      color: $blue;
+      text-decoration: none;
+  
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }
+
+
 
 
 .error-link-container {

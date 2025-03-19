@@ -1,6 +1,5 @@
 .lunch-card {
   width: 380px;
-  border: 1px solid #ddd;
   color: $black;
   border-radius: 2rem;
   padding: 1rem 1.125rem;
@@ -8,8 +7,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #fff;
-  box-shadow: 0 6px 34px rgba(0, 0, 0, 0.12);
+  background: $white;
+  box-shadow: $shadow;
 
   &__content {
     width: 100%;
@@ -34,20 +33,6 @@
     margin: 4px 0;
     font-size: 14px;
     color: #555;
-  }
-
-  .join-button {
-    background-color: #ffc400;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: #ffd633;
-    }
   }
 }
 

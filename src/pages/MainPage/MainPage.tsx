@@ -47,7 +47,7 @@ const MainPage: React.FC = () => {
 
       <div className={styles["lunch-list"]}>
         {lunches?.map((lunch) => (
-          <LunchCard key={lunch.id} lunch={lunch} />
+          <LunchCard key={lunch.id} lunch={{...lunch, buttonText: "Присоединиться"}} />
         ))}
       </div>
     </div>

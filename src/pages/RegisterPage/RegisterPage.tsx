@@ -8,6 +8,7 @@ import Button from "../../components/ui/Button/Button";
 import AuthLink from "../../components/ui/AuthLink/AuthLink";
 import SelectField from "../../components/forms/SelectField/SelectField";
 import ErrorMessage from "../../components/forms/ErrorMessage/ErrorMessage";
+import styles from "../LoginPage/LoginPage.module.scss";
 
 interface RegisterFormInputs {
   firstName: string;
@@ -33,7 +34,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className={styles["register-page"]}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2>Регистрация</h2>
         

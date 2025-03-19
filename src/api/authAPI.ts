@@ -1,14 +1,15 @@
 import axios from "axios";
 
+let accessToken: string | null = null;
+
 const api = axios.create({ 
   baseURL: "http://localhost:5000/api",
   withCredentials: true, 
  });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 }); 
@@ -17,23 +18,19 @@ api.interceptors.response.use(
   response => response,
   async error => {  
     if (error.response && error.response.status === 401) {
-      const refreshToken = localStorage.getItem("refreshToken");
-      if (refreshToken) {
         try {
-          const response = await axios.post("http://localhost:5000/api/auth/refresh", { refreshToken });
-          const newToken = response.data.token;
-          localStorage.setItem("accessToken", newToken);
-          error.config.headers.Authorization = `Bearer ${newToken}`;
+          const response = await axios.post("http://localhost:5000/api/auth/refresh", {}, { withCredentials: true });
+          const newAccessToken = response.data.accessToken;
+          accessToken = newAccessToken;
+          error.config.headers.Authorization = `Bearer ${newAccessToken}`;
           return axios.request(error.config);
-        } catch (error) {
+        } catch (refreshError) {
           console.log("refresh token error");
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
+          accessToken = null;
           window.location.href = "/login";
         }
 
       }
-    }
     return Promise.reject(error);
   }
 );
@@ -62,9 +59,9 @@ export const login = (data: any) => {
     const user = users.find((user: any) => user.username === data.username && user.password === data.password);
     if (user) {
       // fake tokens
-      const accessToken = "fakeAccessToken";
-      const refreshToken = "fakeRefreshToken";
-      resolve({ data: { accessToken, refreshToken, userId: user.username } });
+      const newAccessToken = "fakeAccessToken";
+      accessToken = newAccessToken;
+      resolve({ data: { accessToken, userId: user.username } });
     } else {
       reject(new Error("Неверные логин или пароль"));
     }

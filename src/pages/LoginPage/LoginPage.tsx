@@ -29,10 +29,8 @@ const LoginPage = () => {
   const onSubmit = async (data: LoginFormInputs) => {
     try {
       const response = await loginAPI(data);
-      const { accessToken, refreshToken, userId } = response.data;
-      dispatch(setCredentials({ accessToken, refreshToken, userId }));
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+      const { accessToken, userId } = response.data;
+      dispatch(setCredentials({ accessToken, userId }));
       navigate("/");
     } catch (error: any) {
       setServerError(error.message);
