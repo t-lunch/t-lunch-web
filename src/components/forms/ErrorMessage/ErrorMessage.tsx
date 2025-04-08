@@ -19,7 +19,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ error, className }) => {
     errorText = error.message?.trim() ? error.message : "Это поле обязательно";
   }
 
-  console.log("ErrorMessage received error:", error);
+  // console.log("ErrorMessage received error:", error);
 
   return (
     <div className={`${styles["error-container"]} ${className || ""}`.trim()}>

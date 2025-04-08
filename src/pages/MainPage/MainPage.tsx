@@ -31,15 +31,7 @@ const MainPage: React.FC = () => {
 
       <div className={styles["main-page__create"]}>
         <Link to="/create-lunch">
-          <Button
-            type="submit"
-            style={{
-              textTransform: "uppercase",
-              fontSize: "1.25rem",
-              fontWeight: 700,
-              letterSpacing: "0px",
-            }}
-          >
+          <Button type="submit" emphasized>
             Создать
           </Button>
         </Link>

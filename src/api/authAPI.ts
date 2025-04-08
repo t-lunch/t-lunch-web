@@ -1,7 +1,43 @@
 import axios from "axios";
+import { store } from "../store/store";
+import { setCredentials, logout } from "../store/authSlice";
+// import 
+
+interface StoredToken {
+  token: string;
+  expiresAt: number;
+}
+
+const TOKEN_KEY = "accessToken";
+
+export const getStoredToken = (): StoredToken | null => {
+  const tokenString = localStorage.getItem(TOKEN_KEY);
+  if (tokenString) {
+    try {
+      const tokenData = JSON.parse(tokenString) as StoredToken;
+      if (tokenData && tokenData.token && Date.now() < tokenData.expiresAt) {
+        return tokenData;
+      } else {
+        localStorage.removeItem(TOKEN_KEY);
+        return null;
+      }
+    } catch {
+      localStorage.removeItem(TOKEN_KEY);
+      return null;
+    }
+  }
+  return null;
+}
+
+const storeToken = (token: string, duration: number): void => {
+  const tokenData: StoredToken = {
+    token,
+    expiresAt: Date.now() + duration
+  };
+  localStorage.setItem(TOKEN_KEY, JSON.stringify(tokenData));
+};
 
 let accessToken: string | null = null;
-
 const api = axios.create({ 
   baseURL: "http://localhost:5000/api",
   withCredentials: true, 
@@ -22,11 +58,13 @@ api.interceptors.response.use(
           const response = await axios.post("http://localhost:5000/api/auth/refresh", {}, { withCredentials: true });
           const newAccessToken = response.data.accessToken;
           accessToken = newAccessToken;
+          storeToken(newAccessToken, 3600000);
+          store.dispatch(setCredentials({ accessToken: newAccessToken, userId: store.getState().auth.userId }));
           error.config.headers.Authorization = `Bearer ${newAccessToken}`;
           return axios.request(error.config);
-        } catch (refreshError) {
-          console.log("refresh token error");
-          accessToken = null;
+        } catch {
+          store.dispatch(logout());
+          localStorage.removeItem(TOKEN_KEY);
           window.location.href = "/login";
         }
 
@@ -60,6 +98,7 @@ export const login = (data: any) => {
     if (user) {
       // fake tokens
       const newAccessToken = "fakeAccessToken";
+      storeToken(newAccessToken, 7200000);
       accessToken = newAccessToken;
       resolve({ data: { accessToken, userId: user.username } });
     } else {
