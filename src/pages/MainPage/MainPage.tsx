@@ -19,7 +19,6 @@ const MainPage: React.FC = () => {
   const { data: lunches, isLoading, error } = useQuery<Lunch[]>({
     queryKey: ["lunches"],
     queryFn: async () => await getLunches(),
-    initialData: [],
   });
 
   if (isLoading) return <div>Загрузка...</div>;
@@ -38,8 +37,8 @@ const MainPage: React.FC = () => {
       </div>
 
       <div className={styles["lunch-list"]}>
-        {lunches?.map((lunch) => (
-          <LunchCard key={lunch.id} lunch={{...lunch, buttonText: "Присоединиться"}} />
+        {(lunches || []).map((lunch) => (
+          <LunchCard key={lunch.id} lunch={{ ...lunch, buttonText: "Присоединиться" }} />
         ))}
       </div>
     </div>

@@ -66,9 +66,11 @@ const CreateLunchPage: React.FC = () => {
 
   const mutation = useMutation({
     mutationFn: createLunch,
-    onSuccess: () => {
+    onSuccess: (newLunch) => {
       // Disability of the request "Lunches" -update of the cache
-      queryClient.invalidateQueries(["lunches"]);
+      queryClient.setQueryData(["lunches"], (oldData: any) =>
+        oldData ? [...oldData, newLunch] : [newLunch]
+      );
       navigate("/");
     },
   });
