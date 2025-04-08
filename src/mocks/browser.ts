@@ -1,24 +1,33 @@
-import { setupWorker } from 'msw/browser';
 import { http, HttpResponse } from 'msw';
+import { setupWorker } from 'msw/browser';
 
-// Храним список обедов в переменной, чтобы изменения сохранялись между запросами
+
 let lunchList = [
-  { id: "1", time: "13:00", place: "Кухня", participants: 2 },
-  { id: "2", time: "12:30", place: "Кафе", participants: 3 },
-  { id: "3", time: "12:30", place: "Кафе", participants: 3 }
+  { id: "1", time: "13:00", place: "Кухня", participants: 2, creator: "Алексей" },
+  { id: "2", time: "12:30", place: "Кафе", participants: 3, creator: "Марина" },
 ];
 
+
 export const handlers = [
+
   http.get('/api/lunches', () =>
     HttpResponse.json(lunchList)
   ),
+
+  http.get('/api/lunches/:id', (req) => {
+    const { id } = req.params;
+    const lunch = lunchList.find((l) => l.id === id);
+    if (lunch) {
+      return HttpResponse.json(lunch);
+    }
+    return HttpResponse.json({ error: "Not Found" }, { status: 404 });
+  }),
+
   http.post('/api/lunches', async (req) => {
     let body: any = {};
     try {
-      // Попытка получить тело запроса через req.request.json()
       body = await req.request.json();
     } catch (e) {
-      // Если не получилось, fallback на req.body
       body = req.body || {};
     }
     const { time, place, note } = body as { time?: string; place?: string; note?: string };
@@ -41,4 +50,4 @@ export const handlers = [
   }),
 ];
 
-export const worker = setupWorker(...handlers);
+export const worker = setupWorker(...handlers); 

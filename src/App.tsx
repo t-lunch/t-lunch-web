@@ -6,7 +6,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import MyLunchesPage from "./pages/MyLunchesPage/MyLunchesPage";
 import CreateLunchPage from "./pages/CreateLunchPage/CreateLunchPage";
-// import LunchInfoPage from './pages/LunchInfoPage/LunchInfoPage';
+import LunchInfoPage from './pages/LunchInfoPage/LunchInfoPage';
 // import ProfilePage from './pages/ProfilePage/ProfilePage';
 // import NotFound from './pages/NotFound/NotFound';
 import "./App.css";
@@ -76,8 +76,8 @@ const App: React.FC = () => {
             </PrivateRoute>
           }
         />
-        {/* <Route path="/lunch/:id" element={<PrivateRoute><LunchInfoPage /></PrivateRoute>} />
-            <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/lunch/:id" element={<PrivateRoute><LunchInfoPage /></PrivateRoute>} />
+            {/* <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
             <Route path="*" element={<NotFound />} /> */}
       </Routes>
     </div>

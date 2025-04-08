@@ -1,0 +1,42 @@
+.lunch-info {
+  &__container {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__title {
+    margin: 10px 0;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__icon {
+    font-size: 1.2rem;
+  }
+
+  &__note {
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 50px;
+  }
+
+  &.loading,
+  &.error {
+    text-align: center;
+    margin-top: 20px;
+  }
+}
