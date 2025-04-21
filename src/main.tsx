@@ -7,7 +7,7 @@ import { store } from "./store/store";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getStoredToken } from "./api/authAPI";
-import { setCredentials } from "./store/authSlice";
+import { setCredentials } from "./store/slices/authSlice";
 
 async function prepare() {
   if (process.env.NODE_ENV === 'development') {

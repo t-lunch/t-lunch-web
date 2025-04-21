@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setCredentials } from "../../store/authSlice";
+import { setCredentials } from "../../store/slices/authSlice";
 import { login as loginAPI } from "../../api/authAPI";
 import InputField from "../../components/layout/InputField/InputField";
 import Button from "../../components/ui/Button/Button";

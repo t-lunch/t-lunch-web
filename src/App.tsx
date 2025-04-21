@@ -76,7 +76,7 @@ const App: React.FC = () => {
             </PrivateRoute>
           }
         />
-        <Route path="/lunch/:id" element={<PrivateRoute><LunchInfoPage /></PrivateRoute>} />
+        <Route path="/lunch/:lunchId" element={<PrivateRoute><LunchInfoPage /></PrivateRoute>} />
             {/* <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
             <Route path="*" element={<NotFound />} /> */}
       </Routes>

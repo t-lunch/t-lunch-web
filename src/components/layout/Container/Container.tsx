@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'classnames'; 
 import styles from './Container.module.scss';
 
 interface ContainerProps {
@@ -7,7 +8,11 @@ interface ContainerProps {
 }
 
 const Container: React.FC<ContainerProps> = ({ children, className }) => {
-  return <div className={`${styles.container} ${className || ''}`}>{children}</div>;
+  return (
+    <div className={clsx(styles.container, className && styles[className])}>
+      {children}
+    </div>
+  );
 };
 
 export default Container;

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createLunch } from "../../api/lunchesAPI";
+import { useDispatch } from "react-redux";
+import { createLunchThunk, fetchLunchesThunk } from "../../store/slices/lunchesSlice";
+import { AppDispatch } from "../../store/store";
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../../components/ui/PageTitle/PageTitle";
 import Container from "../../components/layout/Container/Container";
@@ -12,19 +13,40 @@ import styles from "./CreateLunchPage.module.scss";
 const getTimeIntervals = () => {
   const intervals: string[] = [];
   const now = new Date();
+
   const start = new Date(now);
   start.setMinutes(Math.ceil(now.getMinutes() / 15) * 15, 0, 0);
-  const end = new Date();
-  end.setHours(22, 0, 0, 0);
 
-  while (start <= end) {
+  const endToday = new Date(now);
+  endToday.setHours(22, 0, 0, 0);
+
+  while (start <= endToday) {
     intervals.push(
       start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })
     );
     start.setMinutes(start.getMinutes() + 15);
   }
+
+  // If now 23:30 or later -add slots for tomorrow until 02:00
+  if (now.getHours() >= 23 && now.getMinutes() >= 30) {
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    const endTomorrow = new Date(tomorrow);
+    endTomorrow.setHours(2, 0, 0, 0);
+
+    while (tomorrow <= endTomorrow) {
+      intervals.push(
+        tomorrow.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })
+      );
+      tomorrow.setMinutes(tomorrow.getMinutes() + 15);
+    }
+  }
+
   return intervals;
 };
+
 
 interface SelectableButtonProps {
   active: boolean;
@@ -32,7 +54,6 @@ interface SelectableButtonProps {
   children: React.ReactNode;
   activeClassName: string;
   inactiveClassName: string;
-  type?: "button" | "submit" | "reset";
 }
 
 const SelectableButton: React.FC<SelectableButtonProps> = ({
@@ -41,73 +62,57 @@ const SelectableButton: React.FC<SelectableButtonProps> = ({
   children,
   activeClassName,
   inactiveClassName,
-  type = "button",
-}) => {
-  return (
-    <button
-      type={type}
-      className={active ? activeClassName : inactiveClassName}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-};
-
-
+}) => (
+  <button
+    type="button"
+    className={active ? activeClassName : inactiveClassName}
+    onClick={onClick}
+  >
+    {children}
+  </button>
+);
 
 const CreateLunchPage: React.FC = () => {
   const [selectedTime, setSelectedTime] = useState("");
   const [place, setPlace] = useState<"kitchen" | "custom">("kitchen");
   const [note, setNote] = useState("");
+  const [participants, setParticipants] = useState(1);
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const times = useMemo(() => getTimeIntervals(), []);
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: createLunch,
-    onSuccess: (newLunch) => {
-      // Disability of the request "Lunches" -update of the cache
-      queryClient.setQueryData(["lunches"], (oldData: any) =>
-        oldData ? [...oldData, newLunch] : [newLunch]
-      );
-      navigate("/");
-    },
-  });
 
   const handleSubmit = async () => {
     if (!selectedTime) {
       alert("Выберите время");
       return;
     }
-    const newLunch = {
-      time: selectedTime,
-      place: place === "kitchen" ? "Кухня" : "Своё место",
-      note,
-    };
-    try {
-      await mutation.mutateAsync(newLunch);
-      navigate("/");
-    } catch (error) {
-      console.error("Ошибка создания обеда", error);
-    }
+    await dispatch(
+      createLunchThunk({
+        time: selectedTime,
+        place: place === "kitchen" ? "Кухня" : "Своё место",
+        note,
+        participants,
+      })
+    ).unwrap();
+    dispatch(fetchLunchesThunk());
+    navigate("/");
   };
 
   return (
     <div className={styles["create-lunch"]}>
       <PageTitle>Создание обеда</PageTitle>
-      <Container className={styles["create-lunch__container"]}>
+      <Container className="page-container">
         <SectionLabel>Время</SectionLabel>
         <div className={styles["time-container"]}>
-          {times.map((time) => (
+          {times.map((t) => (
             <SelectableButton
-              key={time}
-              active={time === selectedTime}
-              onClick={() => setSelectedTime(time)}
+              key={t}
+              active={t === selectedTime}
+              onClick={() => setSelectedTime(t)}
               activeClassName={styles["time-button--selected"]}
               inactiveClassName={styles["time-button"]}
             >
-              {time}
+              {t}
             </SelectableButton>
           ))}
         </div>
@@ -142,10 +147,21 @@ const CreateLunchPage: React.FC = () => {
           />
         </div>
 
+        <SectionLabel>Участники</SectionLabel>
+        <div className={styles["participants-container"]}>
+          <InputField
+            type="number"
+            placeholder="Количество участников"
+            value={participants.toString()}
+            onChange={(e) => setParticipants(Number(e.target.value))}
+            min={1}
+          />
+        </div>
+
         <Button
           type="button"
           onClick={handleSubmit}
-          disabled={mutation.isLoading}
+          disabled={false}
           emphasized
         >
           Создать
