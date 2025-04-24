@@ -7,7 +7,7 @@ import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import MyLunchesPage from "./pages/MyLunchesPage/MyLunchesPage";
 import CreateLunchPage from "./pages/CreateLunchPage/CreateLunchPage";
 import LunchInfoPage from './pages/LunchInfoPage/LunchInfoPage';
-// import ProfilePage from './pages/ProfilePage/ProfilePage';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
 // import NotFound from './pages/NotFound/NotFound';
 import "./App.css";
 import { useSelector } from "react-redux";
@@ -77,8 +77,8 @@ const App: React.FC = () => {
           }
         />
         <Route path="/lunch/:lunchId" element={<PrivateRoute><LunchInfoPage /></PrivateRoute>} />
-            {/* <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
-            <Route path="*" element={<NotFound />} /> */}
+        <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+            {/*<Route path="*" element={<NotFound />} /> */}
       </Routes>
     </div>
   );

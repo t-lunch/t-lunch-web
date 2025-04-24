@@ -12,7 +12,8 @@ export interface Lunch {
   place: string;
   note?: string;
   participants: number;
-  creator: string;
+  creatorId: string;
+  creatorName: string;
   participantsList: Participant[];
 }
 
@@ -89,12 +90,12 @@ const lunchesSlice = createSlice({
 
       .addCase(joinLunchThunk.fulfilled, (state, action: PayloadAction<Lunch>) => {
         const updated = action.payload;
-        if (state.current?.id === updated.id) {
-          state.current = updated;
-        }
         const idx = state.list.findIndex(l => l.id === updated.id);
         if (idx !== -1) {
           state.list[idx] = updated;
+        }
+        if (state.current?.id === updated.id) {
+          state.current = updated;
         }
       });
   }

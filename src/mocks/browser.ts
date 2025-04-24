@@ -1,15 +1,24 @@
-import { http, HttpResponse } from 'msw';
-import { setupWorker } from 'msw/browser';
+import { http, HttpResponse } from 'msw'
+import { setupWorker } from 'msw/browser'
 
 interface Participant { id: string; name: string }
 interface Lunch {
-  id: string;
-  time: string;
-  place: string;
-  note: string;
-  participants: number;
-  creator: string;
-  participantsList: Participant[];
+  id: string
+  time: string
+  place: string
+  note: string
+  participants: number
+  creatorId: string
+  creatorName: string
+  participantsList: Participant[]
+}
+
+const getTimePlus30 = (): string => {
+  const now = new Date()
+  now.setMinutes(now.getMinutes() + 30)
+  const hh = now.getHours().toString().padStart(2, '0')
+  const mm = now.getMinutes().toString().padStart(2, '0')
+  return `${hh}:${mm}`
 }
 
 let lunchList: Lunch[] = [
@@ -18,7 +27,8 @@ let lunchList: Lunch[] = [
     time: "13:00",
     place: "Кухня",
     participants: 2,
-    creator: "Алексей",
+    creatorId: "uAleksey",
+    creatorName: "Алексей",
     note: "",
     participantsList: [
       { id: "u1", name: "Иван Петров" },
@@ -30,60 +40,95 @@ let lunchList: Lunch[] = [
     time: "12:30",
     place: "Кафе",
     participants: 1,
-    creator: "Марина",
+    creatorId: "uMarina",
+    creatorName: "Марина",
     note: "Жду всех в кафе «Уют»",
     participantsList: [
       { id: "u3", name: "Марина" }
     ]
+  },
+  {
+    id: "3",
+    time: getTimePlus30(),
+    place: "Столовая",
+    participants: 0,
+    creatorId: "uPetr",
+    creatorName: "Петр",
+    note: "",
+    participantsList: []
+  },
+  {
+    id: "4",
+    time: getTimePlus30(),
+    place: "Кофейня",
+    participants: 1,
+    creatorId: "uElena",
+    creatorName: "Елена",
+    note: "Возьму для всех кофе!",
+    participantsList: [
+      { id: "u4", name: "Елена" }
+    ]
   }
-];
+]
 
 export const handlers = [
   http.get('/api/lunches', () => {
-    return HttpResponse.json(lunchList);
+    return HttpResponse.json(lunchList)
   }),
 
   http.get('/api/lunches/:id', ({ params }) => {
-    const lunch = lunchList.find(l => l.id === params.id);
+    const lunch = lunchList.find(l => l.id === params.id)
     if (!lunch) {
-      return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+      return new HttpResponse(null, { status: 404, statusText: 'Not Found' })
     }
-    return HttpResponse.json(lunch);
-  }),
-
-  http.get('/lunch/:id', ({ params }) => {
-    const lunch = lunchList.find(l => l.id === params.id);
-    if (!lunch) {
-      return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
-    }
-    return HttpResponse.json(lunch);
+    return HttpResponse.json(lunch)
   }),
 
   http.post('/api/lunches', async ({ request }) => {
-    const { time, place, note, participants } = await request.json();
+    const { place, note, creatorId, creatorName } = await request.json()
+  
+    const time = getTimePlus30()
+  
     const newLunch: Lunch = {
       id: Date.now().toString(),
       time,
       place,
       note: note || '',
-      participants: participants || 1,
-      creator: 'you',
-      participantsList: [{ id: 'you', name: 'Вы' }]
-    };
-    lunchList.push(newLunch);
-    return HttpResponse.json(newLunch);
+      participants: 1,
+      creatorId,
+      creatorName,
+      participantsList: [{ id: creatorId, name: creatorName }]
+    }
+  
+    lunchList.push(newLunch)
+  
+    return HttpResponse.json(newLunch)
   }),
+  
 
   http.post('/api/lunches/:id/join', ({ params }) => {
-    const lunch = lunchList.find(l => l.id === params.id);
+    const lunch = lunchList.find(l => l.id === params.id)
     if (!lunch) {
-      return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+      return new HttpResponse(null, { status: 404, statusText: 'Not Found' })
     }
-    const newParticipant = { id: Date.now().toString(), name: 'Вы' };
-    lunch.participantsList.push(newParticipant);
-    lunch.participants = lunch.participantsList.length;
-    return HttpResponse.json(lunch);
+    if (lunch.participantsList.some(p => p.id === 'you')) {
+      return new HttpResponse(null, { status: 400, statusText: 'Already joined' })
+    }
+    const newParticipant = { id: 'you', name: 'Вы' }
+    lunch.participantsList.push(newParticipant)
+    lunch.participants = lunch.participantsList.length
+    return HttpResponse.json(lunch)
   }),
-];
 
-export const worker = setupWorker(...handlers);
+
+  http.post('/api/lunches/:id/leave', ({ params }) => {
+    const lunch = lunchList.find(l => l.id === params.id)
+    if (!lunch) return new HttpResponse(null, { status: 404 })
+    lunch.participantsList = lunch.participantsList.filter(p => p.id !== 'you')
+    lunch.participants = lunch.participantsList.length
+    return HttpResponse.json(lunch)
+  }),
+
+]
+
+export const worker = setupWorker(...handlers)
