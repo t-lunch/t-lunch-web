@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, es } from 'msw'
 import { setupWorker } from 'msw/browser'
 
 interface Participant { id: string; name: string }
@@ -129,6 +129,34 @@ export const handlers = [
     return HttpResponse.json(lunch)
   }),
 
+  // GET profile
+  http.get('/api/profile', async ({ request }) => {
+    const url = new URL(request.url)
+    const userId = url.searchParams.get('userId')
+  
+    const users = JSON.parse(localStorage.getItem('users') || '[]')
+    const user = users.find((u: any) => u.username === userId)
+  
+    if (!user) {
+      return new HttpResponse(null, { status: 404, statusText: 'User not found' })
+    }
+  
+    const { firstName, lastName, username, telegram, office } = user
+    return HttpResponse.json({ firstName, lastName, username, telegram, office })
+  }),
+  
+
+  http.put("/api/profile", async (req) => {
+    const { userId, ...data } = await req.json();
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const idx = users.findIndex((u: any) => u.username === userId);
+    if (idx === -1) {
+      return new HttpResponse(null, { status: 404 });
+    }
+    users[idx] = { ...users[idx], ...data };
+    localStorage.setItem("users", JSON.stringify(users));
+    return HttpResponse.json(users[idx]);
+  }),
 ]
 
 export const worker = setupWorker(...handlers)

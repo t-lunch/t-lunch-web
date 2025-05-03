@@ -7,45 +7,68 @@ import FormLabel from "../../components/forms/FormLabel/FormLabel";
 import Button from "../../components/ui/Button/Button";
 import SelectField from "../../components/forms/SelectField/SelectField";
 import ErrorMessage from "../../components/forms/ErrorMessage/ErrorMessage";
-import { useGetProfileQuery } from "../../api/userApi";
+import {
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+  UserProfile,
+} from "../../api/userApi";
 import styles from "../LoginPage/LoginPage.module.scss";
 
 interface ProfileFormInputs {
   firstName: string;
   lastName: string;
-  username: string;
   telegram: string;
   office: string;
 }
 
 const ProfilePage: React.FC = () => {
-  const userId = useSelector((state: RootState) => state.auth.userId);
+  const userId = useSelector((s: RootState) => s.auth.userId!);
   const [editMode, setEditMode] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const { data: initialData, isLoading, error } = useGetProfileQuery(userId!, { skip: !userId });
+  const {
+    data: initialData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetProfileQuery(userId, {
+    skip: !userId,
+    refetchOnMountOrArgChange: true,
+  });
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ProfileFormInputs>({});
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ProfileFormInputs>();
 
   useEffect(() => {
     if (initialData) {
-      reset(initialData);
+      reset({
+        firstName: initialData.firstName,
+        lastName: initialData.lastName,
+        telegram: initialData.telegram,
+        office: initialData.office,
+      });
     }
   }, [initialData, reset]);
 
   const onSubmit = async (data: ProfileFormInputs) => {
+    setServerError(null);
     try {
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      const idx = users.findIndex((u: { username: string }) => u.username === userId);
-      if (idx !== -1) {
-        users[idx] = { ...users[idx], ...data };
-        localStorage.setItem("users", JSON.stringify(users));
-        reset(data);
-        setEditMode(false);
-        setServerError(null);
-      }
-    } catch (error) {
-      setServerError(error instanceof Error ? error.message : String(error));
+      const updated = await updateProfile({ userId, data }).unwrap();
+      reset({
+        firstName: updated.firstName,
+        lastName: updated.lastName,
+        telegram: updated.telegram,
+        office: updated.office,
+      });
+      setEditMode(false);
+    } catch (err: any) {
+      setServerError(err.message || "Ошибка сервера");
     }
   };
 
@@ -56,41 +79,27 @@ const ProfilePage: React.FC = () => {
     <div className={styles["register-page"]}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2>Профиль</h2>
+
         <FormLabel>Имя</FormLabel>
-        {editMode ? (
-          <InputField
-            placeholder="Введите имя"
-            register={register("firstName", { required: true })}
-            error={errors.firstName}
-          />
-        ) : (
-          <div>{initialData.firstName}</div>
-        )}
+        <InputField
+          readOnly={!editMode}
+          {...register("firstName", { required: "Обязательное поле" })}
+          error={errors.firstName}
+        />
 
         <FormLabel>Фамилия</FormLabel>
-        {editMode ? (
-          <InputField
-            placeholder="Введите фамилию"
-            register={register("lastName", { required: true })}
-            error={errors.lastName}
-          />
-        ) : (
-          <div>{initialData.lastName}</div>
-        )}
-
-        <FormLabel>Логин</FormLabel>
-        <div>{initialData.username}</div>
+        <InputField
+          readOnly={!editMode}
+          {...register("lastName", { required: "Обязательное поле" })}
+          error={errors.lastName}
+        />
 
         <FormLabel>Telegram</FormLabel>
-        {editMode ? (
-          <InputField
-            placeholder="Введите Telegram"
-            register={register("telegram", { required: true })}
-            error={errors.telegram}
-          />
-        ) : (
-          <div>{initialData.telegram}</div>
-        )}
+        <InputField
+          readOnly={!editMode}
+          {...register("telegram", { required: "Обязательное поле" })}
+          error={errors.telegram}
+        />
 
         <SelectField
           label="Офис"
@@ -100,14 +109,19 @@ const ProfilePage: React.FC = () => {
           ]}
           register={register("office", { required: "Обязательное поле" })}
           error={errors.office ? { message: errors.office.message } : null}
+          disabled={!editMode}
         />
 
         <ErrorMessage error={serverError ? { message: serverError } : null} />
 
         {editMode ? (
-          <Button type="submit" disabled={isSubmitting}>Сохранить</Button>
+          <Button type="submit" disabled={isUpdating}>
+            {isUpdating ? "Сохраняем..." : "Сохранить"}
+          </Button>
         ) : (
-          <Button type="button" onClick={() => setEditMode(true)}>Редактировать</Button>
+          <Button type="button" onClick={() => setEditMode(true)}>
+            Сохранить изменения
+          </Button>
         )}
       </form>
     </div>

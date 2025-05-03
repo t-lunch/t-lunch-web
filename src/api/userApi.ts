@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface UserProfile {
   firstName: string;
@@ -9,31 +9,25 @@ export interface UserProfile {
 }
 
 export const userApi = createApi({
-  reducerPath: 'userApi',
-  baseQuery: async (args: any) => {
-    // Мокаем fetchBaseQuery через localStorage
-    if (args.url === '/profile' && args.method === 'GET') {
-      const userId = args.params?.userId;
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find((u: any) => u.username === userId);
-      if (user) {
-        return { data: {
-          firstName: user.firstName || '',
-          lastName: user.lastName || '',
-          username: user.username || '',
-          telegram: user.telegram || '',
-          office: user.office || '',
-        }};
-      }
-      return { error: { status: 404, data: 'User not found' } };
-    }
-    return { error: { status: 400, data: 'Not implemented' } };
-  },
+  reducerPath: "userApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+  tagTypes: ["Profile"],
   endpoints: (builder) => ({
     getProfile: builder.query<UserProfile, string>({
-      query: (userId: string) => ({ url: '/profile', method: 'GET', params: { userId } }),
+      // ← именно так, без объекта
+      query: (userId) => `profile?userId=${encodeURIComponent(userId)}`,
+      providesTags: (result, error, userId) => [{ type: "Profile", id: userId }],
+    }),
+    updateProfile: builder.mutation<UserProfile, { userId: string; data: Partial<UserProfile> }>({
+      query: ({ userId, data }) => ({
+        url: "profile",
+        method: "PUT",
+        body: { userId, ...data },
+      }),
+      invalidatesTags: (res, err, { userId }) => [{ type: "Profile", id: userId }],
     }),
   }),
 });
 
-export const { useGetProfileQuery } = userApi;
+
+export const { useGetProfileQuery, useUpdateProfileMutation } = userApi;

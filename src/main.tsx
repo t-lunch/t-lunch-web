@@ -16,9 +16,15 @@ async function prepare() {
   }
 }
 
-const storedToken = getStoredToken();
-if (storedToken) {
-  store.dispatch(setCredentials({ accessToken: storedToken.token, userId: null }));
+const authFromLs = JSON.parse(localStorage.getItem("auth") || "null");
+if (authFromLs && authFromLs.accessToken && authFromLs.userId) {
+  store.dispatch(
+    setCredentials({
+      accessToken: authFromLs.accessToken,
+      userId: authFromLs.userId,
+      userName: authFromLs.userName ?? "",
+    })
+  );
 }
 
 const queryClient = new QueryClient();

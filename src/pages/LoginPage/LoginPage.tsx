@@ -16,7 +16,7 @@ interface LoginFormInputs {
   password: string;
 }
 
-const LoginPage = () => {
+const LoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -30,10 +30,11 @@ const LoginPage = () => {
     try {
       const response = await loginAPI(data);
       const { accessToken, userId } = response.data;
-      dispatch(setCredentials({ accessToken, userId }));
-      navigate("/");
-    } catch (error: any) {
-      setServerError(error.message);
+      // dispatch внутри loginAPI уже сделан, но дублируем для надёжности:
+      dispatch(setCredentials({ accessToken, userId, userName: "" }));
+      navigate("/profile");
+    } catch (err: any) {
+      setServerError(err.message);
     }
   };
 
@@ -44,23 +45,21 @@ const LoginPage = () => {
 
         <InputField
           placeholder="Ваш логин"
-          register={register("username", { required: true })}
+          register={register("username", { required: "Обязательное поле" })}
           error={errors.username}
         />
 
         <InputField
           type="password"
           placeholder="Ваш пароль"
-          register={register("password", { required: true })}
+          register={register("password", { required: "Обязательное поле" })}
           error={errors.password}
         />
 
-        
         <div className={styles["error-link-container"]}>
-          <ErrorMessage error={serverError ? { message: serverError } : null}/>
+          <ErrorMessage error={serverError ? { message: serverError } : null} />
           <LinkText text="Забыли пароль?" to="/forgot-password" />
         </div>
-
 
         <Button type="submit" disabled={isSubmitting}>
           Войти
