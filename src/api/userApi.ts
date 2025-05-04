@@ -14,7 +14,6 @@ export const userApi = createApi({
   tagTypes: ["Profile"],
   endpoints: (builder) => ({
     getProfile: builder.query<UserProfile, string>({
-      // ← именно так, без объекта
       query: (userId) => `profile?userId=${encodeURIComponent(userId)}`,
       providesTags: (result, error, userId) => [{ type: "Profile", id: userId }],
     }),

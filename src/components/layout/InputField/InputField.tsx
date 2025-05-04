@@ -4,14 +4,15 @@ import ErrorMessage from "../../forms/ErrorMessage/ErrorMessage";
 
 interface InputFieldProps {
   placeholder: string;
-  register?: any;
+  register: any;
   error?: { message?: string } | null;
   type?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  readonly?: boolean;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ placeholder, register, error, type = "text", onChange, value }) => {
+const InputField: React.FC<InputFieldProps> = ({ placeholder, register, error, type = "text", onChange, value, readOnly = false, }) => {
   return (
     <div className={styles["input-wrapper"]}>
       <input
@@ -19,6 +20,7 @@ const InputField: React.FC<InputFieldProps> = ({ placeholder, register, error, t
         placeholder={placeholder}
         className={`${error ? styles["input-error"] : ""}`}
         {...register}
+        readOnly={readOnly}
         value={value}
         onChange={onChange}
       />

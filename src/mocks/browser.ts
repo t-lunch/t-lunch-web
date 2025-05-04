@@ -106,56 +106,101 @@ export const handlers = [
   }),
   
 
-  http.post('/api/lunches/:id/join', ({ params }) => {
+  http.post('/api/lunches/:id/join', async ({ params, request }) => {
+    const lunch = lunchList.find(l => l.id === params.id);
+    if (!lunch) {
+      return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+    }
+  
+    const { userId, creatorName } = await request.json();
+  
+    if (lunch.participantsList.some(p => p.id === userId)) {
+      return new HttpResponse(null, { status: 400, statusText: 'Already joined' });
+    }
+  
+    const newParticipant = { id: userId, name: creatorName };
+    lunch.participantsList.push(newParticipant);
+    lunch.participants = lunch.participantsList.length;
+  
+    return HttpResponse.json(lunch);
+  }),
+  
+
+
+  http.post('/api/lunches/:id/leave', async ({ params, request }) => {
     const lunch = lunchList.find(l => l.id === params.id)
     if (!lunch) {
       return new HttpResponse(null, { status: 404, statusText: 'Not Found' })
     }
-    if (lunch.participantsList.some(p => p.id === 'you')) {
-      return new HttpResponse(null, { status: 400, statusText: 'Already joined' })
-    }
-    const newParticipant = { id: 'you', name: 'Вы' }
-    lunch.participantsList.push(newParticipant)
+  
+    const { userId } = await request.json() as { userId: string }
+  
+    lunch.participantsList = lunch.participantsList.filter(p => p.id !== userId)
     lunch.participants = lunch.participantsList.length
+  
     return HttpResponse.json(lunch)
   }),
-
-
-  http.post('/api/lunches/:id/leave', ({ params }) => {
-    const lunch = lunchList.find(l => l.id === params.id)
-    if (!lunch) return new HttpResponse(null, { status: 404 })
-    lunch.participantsList = lunch.participantsList.filter(p => p.id !== 'you')
-    lunch.participants = lunch.participantsList.length
-    return HttpResponse.json(lunch)
-  }),
+  
 
   // GET profile
-  http.get('/api/profile', async ({ request }) => {
+  http.get('/api/profile', ({ request }) => {
     const url = new URL(request.url)
     const userId = url.searchParams.get('userId')
-  
     const users = JSON.parse(localStorage.getItem('users') || '[]')
     const user = users.find((u: any) => u.username === userId)
-  
     if (!user) {
       return new HttpResponse(null, { status: 404, statusText: 'User not found' })
     }
-  
-    const { firstName, lastName, username, telegram, office } = user
-    return HttpResponse.json({ firstName, lastName, username, telegram, office })
+    return HttpResponse.json(user)
   }),
-  
 
-  http.put("/api/profile", async (req) => {
-    const { userId, ...data } = await req.json();
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const idx = users.findIndex((u: any) => u.username === userId);
-    if (idx === -1) {
-      return new HttpResponse(null, { status: 404 });
+  // PUT профиль + одновременный апдейт lunchList
+  http.put('/api/profile', async ({ request }) => {
+    const { userId, ...data } = (await request.json()) as {
+      userId: string
+      firstName?: string
+      lastName?: string
+      telegram?: string
+      office?: string
     }
-    users[idx] = { ...users[idx], ...data };
-    localStorage.setItem("users", JSON.stringify(users));
-    return HttpResponse.json(users[idx]);
+
+    // 1) Обновляем localStorage.users
+    const users = JSON.parse(localStorage.getItem('users') || '[]')
+    const idx = users.findIndex((u: any) => u.username === userId)
+    if (idx === -1) {
+      return new HttpResponse(null, { status: 404, statusText: 'Not Found' })
+    }
+    users[idx] = { ...users[idx], ...data }
+    localStorage.setItem('users', JSON.stringify(users))
+    const updatedUser = users[idx]
+
+    // 2) Формируем новое отображаемое имя
+    const newName = `${updatedUser.firstName} ${updatedUser.lastName}`
+
+    // 3) Применяем ко всем lunchList
+    lunchList = lunchList.map((l) => {
+      // если вы создатель — меняем creatorName
+      if (l.creatorId === userId) {
+        l.creatorName = newName
+      }
+      // если вы участник — меняем имя в participantsList
+      l.participantsList = l.participantsList.map((p) =>
+        p.id === userId ? { ...p, name: newName } : p
+      )
+      l.participants = l.participantsList.length
+      return l
+    })
+
+    // 4) Возвращаем обновлённого пользователя
+    return HttpResponse.json(updatedUser)
+  }),
+
+  // чтобы React Router работал SPA-переход на /profile
+  http.get('/profile', () => {
+    return new HttpResponse(
+      '<!doctype html><html><body><div id="root"></div></body></html>',
+      { headers: { 'Content-Type': 'text/html' } }
+    )
   }),
 ]
 

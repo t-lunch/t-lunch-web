@@ -11,6 +11,7 @@ import cooking from "../../../assets/images/icons/cooking.svg";
 import time from "../../../assets/images/icons/time.svg";
 import people from "../../../assets/images/icons/people.svg";
 import Button from "../../ui/Button/Button";
+
 interface Participant { id: string; name: string }
 interface Lunch {
   id: string
@@ -37,14 +38,21 @@ const isLunchPassed = (lunchTime?: string) => {
 const LunchCard: React.FC<LunchCardProps> = ({ lunch }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
-  const currentUserId = useSelector((s: RootState) => s.auth.user?.id)
+  const currentUserId = useSelector((s: RootState) => s.auth.userId)
 
   const passed = isLunchPassed(lunch.time)
   const isJoined = lunch.participantsList.some(p => p.id === currentUserId)
   const isCreator = lunch.creatorId === currentUserId
 
   const handleJoin = async () => {
-    await dispatch(joinLunchThunk(lunch.id)).unwrap()
+    try {
+      await dispatch(joinLunchThunk(lunch.id)).unwrap()
+      // After successful connection, redirect the dinner page
+      navigate(`/lunch/${lunch.id}`)
+    } catch (err) {
+      console.error("Не удалось присоединиться", err)
+      // You can show the user error
+    }
   }
 
   const handleView = () => {
@@ -52,15 +60,31 @@ const LunchCard: React.FC<LunchCardProps> = ({ lunch }) => {
   }
 
   let button
-  if (passed || isJoined || isCreator) {
+  if (passed) {
+    // Lunch has passed -only viewing
+    button = (
+      <Button onClick={handleView}>
+        Посмотреть информацию
+      </Button>
+    )
+  } else if (isCreator) {
+    // You are the creator -only view
+    button = (
+      <Button onClick={handleView}>
+        Посмотреть информацию
+      </Button>
+    )
+  } else if (isJoined) {
+    // Already participant — look +, for example, leave
     button = (
       <Button onClick={handleView}>
         Посмотреть информацию
       </Button>
     )
   } else {
+    // You can join
     button = (
-      <Button onClick={handleView}>
+      <Button onClick={handleJoin}>
         Присоединиться
       </Button>
     )
