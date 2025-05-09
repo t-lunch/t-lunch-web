@@ -4,7 +4,7 @@ import {
   getLunchById,
   createLunch,
   joinLunch,
-  leaveLunch,        // импортируем новый API
+  leaveLunch,
 } from '../../api/lunchesAPI';
 
 export interface Participant {

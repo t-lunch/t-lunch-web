@@ -9,7 +9,6 @@ import CreateLunchPage from "./pages/CreateLunchPage/CreateLunchPage";
 import LunchInfoPage from './pages/LunchInfoPage/LunchInfoPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 // import NotFound from './pages/NotFound/NotFound';
-import "./App.css";
 import { useSelector } from "react-redux";
 import { RootState } from "./store/store";
 

@@ -75,7 +75,6 @@ const CreateLunchPage: React.FC = () => {
   const navigate = useNavigate()
   const times = useMemo(() => getTimeIntervals(), [])
 
-  // тянем из стора ваш id и ФИО
   const creatorId = useSelector((s: RootState) => s.auth.userId)!
   const creatorName = useSelector((s: RootState) => s.auth.userName)! 
 

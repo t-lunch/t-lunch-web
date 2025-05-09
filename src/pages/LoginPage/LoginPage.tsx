@@ -30,7 +30,7 @@ const LoginPage: React.FC = () => {
     try {
       const response = await loginAPI(data);
       const { accessToken, userId } = response.data;
-      // dispatch внутри loginAPI уже сделан, но дублируем для надёжности:
+      //Dispatch inside Loginapi has already been made, but duplicate for reliability:
       dispatch(setCredentials({ accessToken, userId, userName: "" }));
       navigate("/profile");
     } catch (err: any) {

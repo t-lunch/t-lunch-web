@@ -142,7 +142,7 @@ export const handlers = [
   }),
   
 
-  // GET profile
+  
   http.get('/api/profile', ({ request }) => {
     const url = new URL(request.url)
     const userId = url.searchParams.get('userId')
@@ -154,7 +154,7 @@ export const handlers = [
     return HttpResponse.json(user)
   }),
 
-  // PUT профиль + одновременный апдейт lunchList
+  
   http.put('/api/profile', async ({ request }) => {
     const { userId, ...data } = (await request.json()) as {
       userId: string
@@ -164,7 +164,7 @@ export const handlers = [
       office?: string
     }
 
-    // 1) Обновляем localStorage.users
+    
     const users = JSON.parse(localStorage.getItem('users') || '[]')
     const idx = users.findIndex((u: any) => u.username === userId)
     if (idx === -1) {
@@ -174,16 +174,14 @@ export const handlers = [
     localStorage.setItem('users', JSON.stringify(users))
     const updatedUser = users[idx]
 
-    // 2) Формируем новое отображаемое имя
     const newName = `${updatedUser.firstName} ${updatedUser.lastName}`
 
-    // 3) Применяем ко всем lunchList
     lunchList = lunchList.map((l) => {
-      // если вы создатель — меняем creatorName
+      
       if (l.creatorId === userId) {
         l.creatorName = newName
       }
-      // если вы участник — меняем имя в participantsList
+      
       l.participantsList = l.participantsList.map((p) =>
         p.id === userId ? { ...p, name: newName } : p
       )
@@ -191,11 +189,10 @@ export const handlers = [
       return l
     })
 
-    // 4) Возвращаем обновлённого пользователя
     return HttpResponse.json(updatedUser)
   }),
 
-  // чтобы React Router работал SPA-переход на /profile
+  
   http.get('/profile', () => {
     return new HttpResponse(
       '<!doctype html><html><body><div id="root"></div></body></html>',

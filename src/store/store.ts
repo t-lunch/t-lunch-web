@@ -1,7 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./slices/authSlice";
+import authReducer, { AuthState } from "./slices/authSlice";
 import lunchReducer from "./slices/lunchesSlice";
-import { userApi } from '../api/userApi';
+import { userApi } from "../api/userApi";
+import { API_URL } from "../config";
 
 interface Preloaded {
   auth?: AuthState;
@@ -26,5 +27,6 @@ export const store = configureStore({
   preloadedState: preloaded,
 });
 
+export const getApiUrl = () => API_URL;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
