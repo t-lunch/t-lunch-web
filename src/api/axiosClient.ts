@@ -1,8 +1,7 @@
-// src/api/axiosClient.ts
 import axios, { AxiosRequestConfig } from "axios";
 import { store } from "../store/store";
 import { setCredentials, logout } from "../store/slices/authSlice";
-import { API_URL } from "../config";  // <-- из config.ts
+import { API_URL } from "../config"; 
 
 interface StoredToken {
   token: string;
@@ -46,7 +45,7 @@ const storeToken = (token: string, duration: number) => {
 };
 
 const api = axios.create({
-  baseURL: API_URL,    // <-- берём URL из config.ts
+  baseURL: API_URL,    
   withCredentials: true,
 });
 
@@ -72,7 +71,7 @@ api.interceptors.response.use(
       isRefreshing = true;
       try {
         const resp = await axios.post(
-          `${API_URL()}/auth/refresh`,  // <-- тоже из config.ts
+          `${API_URL()}/auth/refresh`,
           {},
           { withCredentials: true }
         );

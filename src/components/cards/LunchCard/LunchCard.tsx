@@ -1,8 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { joinLunchThunk } from "../../../store/slices/lunchesSlice";
-import { AppDispatch } from "../../../store/store";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import styles from "./LunchCard.module.scss";
 import LunchDetailItem from "../../ui/LunchDetailItem/LunchDetailItem";
@@ -14,81 +12,34 @@ import Button from "../../ui/Button/Button";
 
 interface Participant { id: string; name: string }
 interface Lunch {
-  id: string
-  place: string
-  time: string
-  participants: number
-  creatorId: string
-  creatorName: string
-  participantsList: Participant[]
+  id: string;
+  place: string;
+  time: string;
+  participants: number;
+  creatorId: string;
+  creatorName: string;
+  participantsList: Participant[];
 }
 
 interface LunchCardProps {
-  lunch: Lunch
+  lunch: Lunch;
 }
 
 const isLunchPassed = (lunchTime?: string) => {
-  if (!lunchTime) return false
-  const [h, m] = lunchTime.split(":").map(Number)
-  const now = new Date()
-  const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m)
-  return now > dt
-}
+  if (!lunchTime) return false;
+  const [h, m] = lunchTime.split(":").map(Number);
+  const now = new Date();
+  const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
+  return now > dt;
+};
 
 const LunchCard: React.FC<LunchCardProps> = ({ lunch }) => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch<AppDispatch>()
-  const currentUserId = useSelector((s: RootState) => s.auth.userId)
-
-  const passed = isLunchPassed(lunch.time)
-  const isJoined = lunch.participantsList.some(p => p.id === currentUserId)
-  const isCreator = lunch.creatorId === currentUserId
-
-  const handleJoin = async () => {
-    try {
-      await dispatch(joinLunchThunk(lunch.id)).unwrap()
-      // After successful connection, redirect the dinner page
-      navigate(`/lunch/${lunch.id}`)
-    } catch (err) {
-      console.error("Не удалось присоединиться", err)
-      // You can show the user error
-    }
-  }
+  const navigate = useNavigate();
+  const currentUserId = useSelector((s: RootState) => s.auth.userId);
 
   const handleView = () => {
-    navigate(`/lunch/${lunch.id}`)
-  }
-
-  let button
-  if (passed) {
-    // Lunch has passed -only viewing
-    button = (
-      <Button onClick={handleView}>
-        Посмотреть информацию
-      </Button>
-    )
-  } else if (isCreator) {
-    // You are the creator -only view
-    button = (
-      <Button onClick={handleView}>
-        Посмотреть информацию
-      </Button>
-    )
-  } else if (isJoined) {
-    // Already participant — look +, for example, leave
-    button = (
-      <Button onClick={handleView}>
-        Посмотреть информацию
-      </Button>
-    )
-  } else {
-    // You can join
-    button = (
-      <Button onClick={handleJoin}>
-        Присоединиться
-      </Button>
-    )
-  }
+    navigate(`/lunch/${lunch.id}`);
+  };
 
   return (
     <div className={styles["lunch-card"]}>
@@ -101,9 +52,9 @@ const LunchCard: React.FC<LunchCardProps> = ({ lunch }) => {
         </ul>
         <img src={image} alt="Обед" className={styles["lunch-card__image"]} />
       </div>
-      {button}
+      <Button onClick={handleView}>Посмотреть информацию</Button>
     </div>
-  )
-}
+  );
+};
 
-export default LunchCard
+export default LunchCard;

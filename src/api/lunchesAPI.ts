@@ -1,41 +1,38 @@
-import axios from "axios";
-import { store } from "../store/store"; 
+import api from "./axiosClient";
+import { store } from "../store/store";
+import { Lunch } from "../types/lunchesTypes";
 
-export const getLunches = async () => {
-  const response = await axios.get("/api/lunches");
+export const getLunches = async (): Promise<Lunch[]> => {
+  const response = await api.get<Lunch[]>("/api/lunches");
   return response.data;
 };
 
-export const getLunchById = async (id: string) => {
-  const response = await axios.get(`/api/lunches/${id}`);
+export const getLunchById = async (id: string): Promise<Lunch> => {
+  const response = await api.get<Lunch>(`/api/lunches/${id}`);
   return response.data;
 };
 
-export const createLunch = async (data: any) => {
-  const response = await axios.post("/api/lunches", data, {
-    headers: { "Content-Type": "application/json" }
+export const createLunch = async (
+  data: Omit<Lunch, "id" | "participants" | "participantsList">
+): Promise<Lunch> => {
+  const response = await api.post<Lunch>("/api/lunches", data);
+  return response.data;
+};
+
+export const joinLunch = async (id: string): Promise<Lunch> => {
+  const userId = store.getState().auth.userId!;
+  const creatorName = store.getState().auth.userName!;
+
+  const response = await api.post<Lunch>(`/api/lunches/${id}/join`, {
+    userId,
+    creatorName,
   });
   return response.data;
 };
 
-export const joinLunch = async (id: string) => {
+export const leaveLunch = async (id: string): Promise<Lunch> => {
   const userId = store.getState().auth.userId!;
-  const creatorName = store.getState().auth.user?.name || "Вы";
 
-  const response = await axios.post(
-    `/api/lunches/${id}/join`,
-    { userId, creatorName },
-    { headers: { "Content-Type": "application/json" } }
-  );
-  return response.data;
-};
-
-export const leaveLunch = async (id: string) => {
-  const userId = store.getState().auth.userId!;
-  const response = await axios.post(
-    `/api/lunches/${id}/leave`,
-    { userId },
-    { headers: { "Content-Type": "application/json" } }
-  );
+  const response = await api.post<Lunch>(`/api/lunches/${id}/leave`, { userId });
   return response.data;
 };

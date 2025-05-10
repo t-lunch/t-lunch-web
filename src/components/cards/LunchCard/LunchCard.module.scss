@@ -9,6 +9,7 @@
   align-items: center;
   background: $white;
   box-shadow: $shadow;
+  z-index: 100;
 
   &__content {
     width: 100%;
